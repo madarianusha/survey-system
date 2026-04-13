@@ -14,10 +14,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class SurveyController extends Controller
 {
     public function dashboard()
-    {
-        $surveys = Survey::withCount('responses')->latest()->get();
-        return view('admin.dashboard', compact('surveys'));
-    }
+{
+    $surveys = Survey::orderBy('id', 'asc')->get();
+    return view('admin.dashboard', compact('surveys'));
+}
 
     public function create()
     {
