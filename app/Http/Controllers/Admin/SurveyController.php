@@ -13,9 +13,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SurveyController extends Controller
 {
-    public function dashboard()
+   public function dashboard()
 {
-    $surveys = Survey::orderBy('id', 'asc')->get();
+    $surveys = Survey::withCount('responses')
+        ->orderBy('id', 'asc')
+        ->get();
+
     return view('admin.dashboard', compact('surveys'));
 }
 
@@ -86,12 +89,11 @@ class SurveyController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Survey status updated.');
     }
 
-    public function results($id)
-    {
-        $survey = Survey::with(['responses.answers'])->findOrFail($id);
-        return view('admin.results', compact('survey'));
-    }
-
+   public function results($id)
+{
+    $survey = Survey::with(['responses.answers.question', 'responses.answers.selectedOption'])->findOrFail($id);
+    return view('admin.results', compact('survey'));
+}
    public function download($id)
 {
     $survey = Survey::with(['responses.answers.question', 'responses.answers.selectedOption'])->findOrFail($id);

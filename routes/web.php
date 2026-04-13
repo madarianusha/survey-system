@@ -11,6 +11,13 @@ Route::post('/survey/{slug}/submit', [UserSurveyController::class, 'submit'])->n
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth'])->name('dashboard');
+Route::post('/admin/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/login'); // or admin login page
+})->name('admin.logout');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [SurveyController::class, 'dashboard'])->name('admin.dashboard');
